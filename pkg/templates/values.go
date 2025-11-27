@@ -64,15 +64,30 @@ func CollectValues(cfg ValuesConfig) (map[string]string, error) {
 		}
 		answer, err := prompt.Run()
 		if err != nil {
+			// 如果是 Ctrl+C 等取消操作，直接返回错误
+			if err.Error() == "^C" {
+				return nil, fmt.Errorf("操作已取消")
+			}
 			return nil, fmt.Errorf("读取字段 %s 失败: %w", field.Name, err)
 		}
-		if answer == "" && field.Required {
-			return nil, fmt.Errorf("字段 %s 不能为空", field.Name)
-		}
+		// promptui 的行为：如果设置了 Default，用户直接回车会返回 Default 值
+		// 如果用户输入了内容，返回用户输入的内容
+		// 如果 Default 为空且用户直接回车，返回空字符串
 		if answer != "" {
+			// 用户输入了值或使用了默认值，直接使用
 			values[field.Name] = answer
-		} else if field.Default != "" {
-			values[field.Name] = field.Default
+		} else {
+			// answer 为空
+			if field.Default != "" {
+				// 有默认值，使用默认值（虽然 promptui 应该已经返回了，但为了保险起见）
+				values[field.Name] = field.Default
+			} else if field.Required {
+				// 必填字段且没有默认值，报错
+				return nil, fmt.Errorf("字段 %s 不能为空", field.Name)
+			} else {
+				// 非必填字段且没有默认值，设置为空字符串，避免模板渲染时报错
+				values[field.Name] = ""
+			}
 		}
 	}
 

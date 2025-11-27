@@ -126,14 +126,68 @@ func ScanTemplateVariables(dir string) *Manifest {
 	}
 	sort.Strings(names)
 
+	// 定义一些常见的关键字段，这些字段标记为必填
+	requiredFields := map[string]bool{
+		"Name": true,
+		"ProjectName": true,
+		"ServiceName": true,
+	}
+
+	// 为常见字段提供智能默认值、友好的提示和描述
+	smartDefaults := map[string]string{
+		"Name":         "demo-service",
+		"ProjectName":  "demo-project",
+		"ServiceName":  "demo-service",
+		"Port":         "8080",
+		"RepoBase":     "github.com",
+		"RepoGroup":    "Divine-Dragon-Voyage",
+		"ProtoPackageName": "example",
+		"ProtoServiceName": "Example",
+	}
+
+	// 友好的提示文本
+	friendlyPrompts := map[string]string{
+		"Name":              "服务名称",
+		"ProjectName":       "项目名称",
+		"ServiceName":        "服务名称",
+		"Port":              "监听端口",
+		"RepoBase":          "仓库根路径",
+		"RepoGroup":         "组织或分组",
+		"ProtoPackageName":  "Proto 包名",
+		"ProtoServiceName":  "gRPC Service 名",
+	}
+
+	// 字段描述
+	fieldDescriptions := map[string]string{
+		"Name":              "影响 Go module、二进制名等",
+		"ProjectName":       "项目标识名称",
+		"ServiceName":       "服务标识名称",
+		"Port":              "服务监听端口号",
+		"RepoBase":          "例如 github.com",
+		"RepoGroup":         "例如 myorg",
+		"ProtoPackageName":  "用于 proto 包和 go_package",
+		"ProtoServiceName":  "生成的 Service/Server 名称",
+	}
+
 	fields := make([]Field, 0, len(names))
 	for _, name := range names {
+		// 只有关键字段才标记为必填，其他字段允许为空
+		required := requiredFields[name]
+		// 获取智能默认值
+		defaultValue := smartDefaults[name]
+		// 获取友好的提示文本，如果没有则使用格式化后的变量名
+		prompt := friendlyPrompts[name]
+		if prompt == "" {
+			prompt = formatPrompt(name)
+		}
+		// 获取描述
+		description := fieldDescriptions[name]
 		fields = append(fields, Field{
 			Name:        name,
-			Prompt:      formatPrompt(name),
-			Description: "",
-			Default:     "",
-			Required:    true,
+			Prompt:      prompt,
+			Description: description,
+			Default:     defaultValue,
+			Required:    required,
 		})
 	}
 
