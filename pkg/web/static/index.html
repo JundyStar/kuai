@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuai - 快速模板管理工具</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-background"></div>
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Kuai</span>
+                        <span class="hero-title-sub">模板管理工具</span>
+                    </h1>
+                    <p class="hero-description">
+                        智能扫描变量，可视化生成项目
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                        <span class="logo-text">Kuai</span>
+                    </div>
+                    <nav class="nav-tabs">
+                        <button class="nav-tab active" data-tab="templates">模板</button>
+                        <button class="nav-tab" data-tab="upload">上传</button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Templates Panel -->
+                <div id="panel-templates" class="panel active">
+                    <div class="panel-header">
+                        <h2>模板列表</h2>
+                        <div class="panel-actions">
+                            <div class="search-box">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                                    <circle cx="7" cy="7" r="4"/>
+                                    <path d="M11 11l4 4"/>
+                                </svg>
+                                <input type="text" id="search-input" placeholder="搜索模板..." oninput="filterTemplates()">
+                            </div>
+                            <button class="btn btn-secondary" onclick="loadTemplates()">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                                    <path d="M1 8a7 7 0 0 1 7-7v2M15 8a7 7 0 0 1-7 7v-2M8 1v6m0 6v6"/>
+                                </svg>
+                                刷新
+                            </button>
+                        </div>
+                    </div>
+                    <div id="templates-grid" class="templates-grid">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+
+                <!-- Upload Panel -->
+                <div id="panel-upload" class="panel">
+                    <div class="panel-header">
+                        <h2>上传新模板</h2>
+                    </div>
+                    <div class="upload-card">
+                        <form id="upload-form" class="upload-form">
+                            <div class="form-group">
+                                <label class="form-label">模板名称</label>
+                                <input type="text" name="name" class="form-input" placeholder="my-template" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">模板描述</label>
+                                <input type="text" name="description" class="form-input" placeholder="模板的简短描述（可选）">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">模板文件 (ZIP)</label>
+                                <div class="file-upload" id="file-upload-area">
+                                    <input type="file" name="file" id="file-input" accept=".zip" required>
+                                    <label for="file-input" class="file-upload-label" id="file-upload-label">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                                            <path d="M10 3v10m0 0l-4-4m4 4l4-4M3 17h14"/>
+                                        </svg>
+                                        <span>选择文件或拖拽到此处</span>
+                                    </label>
+                                    <span id="file-name" class="file-name">未选择文件</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="force" id="force">
+                                    <span>覆盖已存在的模板</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                                    <path d="M8 1v10m0 0l-3-3m3 3l3-3M1 15h14"/>
+                                </svg>
+                                上传模板
+                            </button>
+                        </form>
+                        <div id="upload-message"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Generate Modal -->
+        <div id="generate-modal" class="modal">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-title">生成项目</h2>
+                    <button class="modal-close" onclick="closeModal()" title="关闭 (ESC)">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                            <path d="M15 5L5 15M5 5l10 10"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="generate-form">
+                        <div id="form-fields" class="form-fields"></div>
+                    </form>
+                    <div id="generate-message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="submitGenerate()">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                            <path d="M8 1v6m0 0l3-3m-3 3l-3-3M1 15h14"/>
+                        </svg>
+                        生成并下载
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Preview Modal -->
+        <div id="preview-modal" class="modal">
+            <div class="modal-overlay" onclick="closePreviewModal()"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="preview-title">模板详情</h2>
+                    <button class="modal-close" onclick="closePreviewModal()">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                            <path d="M15 5L5 15M5 5l10 10"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="preview-content"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closePreviewModal()">关闭</button>
+                    <button type="button" class="btn btn-primary" id="preview-use-btn">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                            <path d="M8 1v6m0 0l3-3m-3 3l-3-3M1 15h14"/>
+                        </svg>
+                        使用此模板
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

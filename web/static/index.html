@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuai - 模板管理工具</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">🚀 Kuai 模板管理</h1>
+        
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="showTab('templates'); return false;">模板列表</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showTab('upload'); return false;">上传模板</a>
+            </li>
+        </ul>
+
+        <div id="panel-templates">
+            <button class="btn btn-primary mb-3" onclick="loadTemplates()">🔄 刷新列表</button>
+            <div id="templates-list" class="row"></div>
+        </div>
+
+        <div id="panel-upload" style="display: none;">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">上传新模板</h2>
+                    <form id="upload-form">
+                        <div class="mb-3">
+                            <label class="form-label">模板名称</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">模板文件 (ZIP)</label>
+                            <input type="file" name="file" class="form-control" accept=".zip" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="force" class="form-check-input" id="force">
+                            <label class="form-check-label" for="force">覆盖已存在的模板</label>
+                        </div>
+                        <button type="submit" class="btn btn-success">📤 上传</button>
+                    </form>
+                    <div id="upload-message" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 生成项目模态框 -->
+        <div class="modal fade" id="generate-modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-title">生成项目</h5>
+                        <button type="button" class="btn-close" onclick="closeModal()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="generate-form">
+                            <div id="form-fields"></div>
+                        </form>
+                        <div id="generate-message" class="mt-3"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="submitGenerate()">🚀 生成并下载</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
+
