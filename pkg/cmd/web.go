@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/jundy/kuai/pkg/web"
+	"github.com/jundy/kuai/web"
 )
 
 func newWebCmd() *cobra.Command {
