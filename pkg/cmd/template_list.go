@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"text/tabwriter"
 
@@ -8,7 +9,9 @@ import (
 )
 
 func newTemplateListCmd() *cobra.Command {
-	return &cobra.Command{
+	var jsonOutput bool
+
+	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "列出已安装的模板",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -16,6 +19,18 @@ func newTemplateListCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			if jsonOutput {
+				// JSON 输出
+				data, err := json.MarshalIndent(templates, "", "  ")
+				if err != nil {
+					return fmt.Errorf("序列化 JSON 失败: %w", err)
+				}
+				fmt.Fprintln(cmd.OutOrStdout(), string(data))
+				return nil
+			}
+
+			// 文本输出
 			if len(templates) == 0 {
 				fmt.Fprintln(cmd.OutOrStdout(), "暂无模板，使用 `kuai template add` 添加。")
 				return nil
@@ -28,5 +43,8 @@ func newTemplateListCmd() *cobra.Command {
 			return w.Flush()
 		},
 	}
+
+	cmd.Flags().BoolVar(&jsonOutput, "json", false, "输出 JSON 格式")
+	return cmd
 }
 

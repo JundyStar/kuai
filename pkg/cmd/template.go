@@ -10,6 +10,8 @@ func newTemplateCmd() *cobra.Command {
 
 	templateCmd.AddCommand(newTemplateAddCmd())
 	templateCmd.AddCommand(newTemplateListCmd())
+	templateCmd.AddCommand(newTemplateShowCmd())
+	templateCmd.AddCommand(newTemplateTreeCmd())
 	templateCmd.AddCommand(newTemplateRemoveCmd())
 	return templateCmd
 }

@@ -31,12 +31,33 @@ $env:Path += ";$env:USERPROFILE\go\bin"
 
 ### 快速开始
 
+#### 命令行方式
+
 ```bash
-# 添加模板（支持本地目录或 Git 仓库）
+# 添加模板（从本地目录）
 kuai template add my-go-service --from /path/to/template
 kuai template list
 kuai use my-go-service ./demo-service
 ```
+
+#### Web 界面方式
+
+```bash
+# 启动 Web 服务器
+kuai web
+
+# 或指定端口
+kuai web -p 3000
+
+# 然后在浏览器中访问 http://localhost:8080
+```
+
+Web 界面功能：
+- 📋 查看所有可用模板
+- 📤 上传新模板（ZIP 格式，支持拖拽上传）
+- 🎨 可视化填写模板变量
+- ⬇️ 一键生成并下载项目
+- 🔍 搜索和预览模板
 
 **Windows 路径示例：**
 ```powershell

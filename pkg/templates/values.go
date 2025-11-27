@@ -80,7 +80,7 @@ func CollectValues(cfg ValuesConfig) (map[string]string, error) {
 			// answer 为空
 			if field.Default != "" {
 				// 有默认值，使用默认值（虽然 promptui 应该已经返回了，但为了保险起见）
-				values[field.Name] = field.Default
+			values[field.Name] = field.Default
 			} else if field.Required {
 				// 必填字段且没有默认值，报错
 				return nil, fmt.Errorf("字段 %s 不能为空", field.Name)

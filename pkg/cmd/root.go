@@ -46,6 +46,7 @@ func init() {
 	RootCmd.AddCommand(newUseCmd())
 	RootCmd.AddCommand(newTemplateCmd())
 	RootCmd.AddCommand(newDoctorCmd())
+	RootCmd.AddCommand(newWebCmd())
 }
 
 func fail(format string, args ...any) error {
