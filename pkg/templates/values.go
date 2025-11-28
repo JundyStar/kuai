@@ -13,13 +13,15 @@ import (
 
 // ValuesConfig 定义变量收集的配置。
 type ValuesConfig struct {
-	Manifest   *Manifest
-	FromFile   string
-	RawPairs   []string
-	UseDefault bool
+	Manifest   *Manifest // 模板 manifest，定义需要收集的变量
+	FromFile   string    // 从文件加载变量（JSON/YAML）
+	RawPairs   []string  // 从命令行参数加载变量（key=value 格式）
+	UseDefault bool      // 是否跳过交互，直接使用默认值
 }
 
 // CollectValues 根据 manifest 加载变量。
+// 优先级：命令行参数 > 文件 > 交互式输入 > 默认值。
+// 如果 UseDefault 为 true，会跳过交互式输入，直接使用默认值。
 func CollectValues(cfg ValuesConfig) (map[string]string, error) {
 	values := map[string]string{}
 
